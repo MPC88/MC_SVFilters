@@ -81,10 +81,12 @@ namespace MC_SVFilters
             invFilterInput = UnityEngine.Object.Instantiate<InputField>(source);
             invFilterInput.transform.SetParent(creditsTrans.parent);
             invFilterInput.gameObject.layer = creditsTrans.gameObject.layer;
-            invFilterInput.transform.localPosition = creditsTrans.transform.localPosition + new Vector3(124, 19, 0);
+            RectTransform rt = invFilterInput.GetComponent<RectTransform>();
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rt.rect.width - 8);            
+            invFilterInput.transform.localPosition = creditsTrans.transform.localPosition + new Vector3(128, 19, 0);
             invFilterInput.transform.localScale = creditsTrans.transform.localScale;
             invFilterInput.placeholder.GetComponent<Text>().color = Color.gray;
-            invFilterInput.placeholder.GetComponent<Text>().text = "Filter...";            
+            invFilterInput.placeholder.GetComponent<Text>().text = "Filter...";  
             invFilterInput.enabled = true;
 
             InputField.OnChangeEvent ifOnChangeEvent = new InputField.OnChangeEvent();

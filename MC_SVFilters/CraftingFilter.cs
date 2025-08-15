@@ -27,6 +27,20 @@ namespace MC_SVFilters
         private static InputField craftingFilterInput;
         private static BlueprintCrafting bpCraftingRef;
 
+        internal static Transform btnPanel;
+
+        [HarmonyPatch(typeof(CraftingPanelControl), nameof(CraftingPanelControl.Open))]
+        [HarmonyPostfix]
+        private static void CraftingPanelControlOpen_Post(CraftingPanelControl __instance)
+        {
+            btnPanel = __instance.transform.Find("Panel");
+            if (btnPanel != null && btnPanel.localPosition.x != -125)
+            {
+                if (Main.cfgDebug.Value) Main.log.LogInfo("Moving crafting panel buttons.");
+                btnPanel.localPosition += new Vector3(-125, 0, 0);
+            }
+        }
+
         [HarmonyPatch(typeof(CraftingPanelControl), nameof(CraftingPanelControl.OpenBlueprintCrafting))]
         [HarmonyPostfix]
         private static void CraftingPanelOpenBPCraft_Post(CraftingPanelControl __instance)
@@ -66,8 +80,7 @@ namespace MC_SVFilters
             InputField source = ((GameObject)AccessTools.Field(typeof(InputDialog), "panel").GetValue(InputDialog.inst)).transform.Find("TextInput").GetComponent<InputField>();
             craftingFilterInput = UnityEngine.Object.Instantiate<InputField>(source);
             craftingFilterInput.transform.SetParent(knownBuleprintsTrans.parent);
-            craftingFilterInput.gameObject.layer = knownBuleprintsTrans.gameObject.layer;
-            craftingFilterInput.transform.localPosition = knownBuleprintsTrans.transform.localPosition + new Vector3(-365, 310, 0);
+            craftingFilterInput.gameObject.layer = knownBuleprintsTrans.gameObject.layer;            
             craftingFilterInput.transform.localScale = knownBuleprintsTrans.transform.localScale;
             craftingFilterInput.placeholder.GetComponent<Text>().color = Color.gray;
             craftingFilterInput.placeholder.GetComponent<Text>().text = "Filter...";
