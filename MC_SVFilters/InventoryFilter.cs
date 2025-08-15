@@ -25,29 +25,30 @@ namespace MC_SVFilters
         private static readonly FieldInfo inventoryBtnStashMaterials = AccessTools.Field(typeof(Inventory), "btnStashMaterials");
         private static readonly MethodInfo inventoryAddItemSlot = AccessTools.Method(typeof(Inventory), "AddItemSlot");
         // Skills
-        private static readonly Dictionary<int, string> crewPositions = new Dictionary<int, string>()
+        private const int languageFileCrewSection = 23;
+        private static readonly Dictionary<int, int> crewPositions = new Dictionary<int, int>()
         {
-            {-1, "None"},
-            {0, "Engineer"},
-            {1, "Pilot"},
-            {2, "Navigator"},
-            {3, "Supervisor"},
-            {4, "Gunner"},
-            {5, "Instructor"},
-            {6, "Tactician"},
-            {7, "Steward"},
-            {8, "Adviser"},
-            {9, "RelationsOfficer"},
-            {10, "other1"},
-            {11, "other2"},
-            {12, "other3"},
-            {13, "other4"},
-            {14, "other5"},
-            {15, "Co_Pilot"},
-            {16, "FirstOfficer"},
-            {17, "Primary"},
-            {18, "Staff"},
-            {19, "Captain"}
+            {-1, 11},
+            {0, 10},
+            {1, 12},
+            {2, 14},
+            {3, 16},
+            {4, 18},
+            {5, 20},
+            {6, 22},
+            {7, 24},
+            {8, 26},
+            {9, 28},
+            {10, 30},
+            {11, 32},
+            {12, 34},
+            {13, 36},
+            {14, 38},
+            {15, 40},
+            {16, 42},
+            {17, 44},
+            {18, 46},
+            {19, 48}
         };
 
         // Mod
@@ -80,7 +81,7 @@ namespace MC_SVFilters
             invFilterInput = UnityEngine.Object.Instantiate<InputField>(source);
             invFilterInput.transform.SetParent(creditsTrans.parent);
             invFilterInput.gameObject.layer = creditsTrans.gameObject.layer;
-            invFilterInput.transform.localPosition = creditsTrans.transform.localPosition + new Vector3(115, 20, 0);
+            invFilterInput.transform.localPosition = creditsTrans.transform.localPosition + new Vector3(124, 19, 0);
             invFilterInput.transform.localScale = creditsTrans.transform.localScale;
             invFilterInput.placeholder.GetComponent<Text>().color = Color.gray;
             invFilterInput.placeholder.GetComponent<Text>().text = "Filter...";            
@@ -340,7 +341,7 @@ namespace MC_SVFilters
 
             foreach (CrewSkill skill in crew.skills)
             {
-                if (crewPositions[(int)skill.ID].ToLower().Contains(invFilterInput.text.ToLower()))
+                if (Lang.Get(languageFileCrewSection, crewPositions[(int)skill.ID]).ToLower().Contains(invFilterInput.text.ToLower()))
                 {
                     if (Main.cfgDebug.Value) Main.log.LogInfo("Allowed crew: " + crew.aiChar.name + " with skill " + crewPositions[(int)skill.ID]);
                     return false;
