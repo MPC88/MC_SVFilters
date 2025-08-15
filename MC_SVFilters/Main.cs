@@ -160,6 +160,7 @@ namespace MC_SVFilters
 
             foreach (CargoItem item in cs.cargo)
             {
+                if (cfgDebug.Value) log.LogInfo("================CargoSystem loop round 1================");
                 if (item.stockStationID == -1 && ((item.itemType == 5) ^ (cargoMode == 0)))
                 {
                     if (item.itemType == 5 && IsCrewFiltered(item))
@@ -215,6 +216,7 @@ namespace MC_SVFilters
                 {
                     foreach (CargoItem item3 in cs.cargo)
                     {
+                        if (cfgDebug.Value) log.LogInfo("================CargoSystem loop round 2================");
                         if (item3.itemType == 5 && IsCrewFiltered(item3))
                             continue;
                         if (item3.itemType < 5 && IsCargoItemFiltered(item3))
@@ -275,6 +277,7 @@ namespace MC_SVFilters
                     int num = (j + 1) * -1;
                     foreach (CargoItem item5 in cs.cargo)
                     {
+                        if (cfgDebug.Value) log.LogInfo("================CargoSystem loop round 3================");
                         if (item5.itemType == 5 && IsCrewFiltered(item5))
                             continue;
                         if (item5.itemType < 5 && IsCargoItemFiltered(item5))
