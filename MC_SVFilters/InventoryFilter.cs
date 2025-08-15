@@ -54,16 +54,16 @@ namespace MC_SVFilters
         private static InputField invFilterInput;
         private static Inventory inventoryRef;
 
-        [HarmonyPatch(typeof(DockingUI), nameof(DockingUI.OpenPanel))]
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.Open))]
         [HarmonyPostfix]
-        private static void DocingUIOpenPanel_Post(DockingUI __instance, Inventory ___inventory, int code)
+        private static void InventoryOpen_Post(Inventory __instance)
         {
-            if ((code == hangerPanelCode || code == marketPanelCode) && (int)inventoryCargoMode.GetValue(___inventory) < cargoModeFleet)
+            if ((int)inventoryCargoMode.GetValue(__instance) < cargoModeFleet)
             {
                 if (invFilterInput == null)
-                    CreateInvfilterUI(___inventory.transform.Find("InventoryUI").Find("Credits"));
+                    CreateInvfilterUI(__instance.transform.Find("InventoryUI").Find("Credits"));
 
-                inventoryRef = ___inventory;
+                inventoryRef = __instance;
 
                 invFilterInput.gameObject.SetActive(true);
             }
@@ -80,8 +80,10 @@ namespace MC_SVFilters
             invFilterInput = UnityEngine.Object.Instantiate<InputField>(source);
             invFilterInput.transform.SetParent(creditsTrans.parent);
             invFilterInput.gameObject.layer = creditsTrans.gameObject.layer;
-            invFilterInput.transform.localPosition = creditsTrans.transform.localPosition + new Vector3(115, 15, 0);
+            invFilterInput.transform.localPosition = creditsTrans.transform.localPosition + new Vector3(115, 20, 0);
             invFilterInput.transform.localScale = creditsTrans.transform.localScale;
+            invFilterInput.placeholder.GetComponent<Text>().color = Color.gray;
+            invFilterInput.placeholder.GetComponent<Text>().text = "Filter...";            
             invFilterInput.enabled = true;
 
             InputField.OnChangeEvent ifOnChangeEvent = new InputField.OnChangeEvent();

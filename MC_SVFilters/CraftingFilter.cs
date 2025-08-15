@@ -69,6 +69,8 @@ namespace MC_SVFilters
             craftingFilterInput.gameObject.layer = knownBuleprintsTrans.gameObject.layer;
             craftingFilterInput.transform.localPosition = knownBuleprintsTrans.transform.localPosition + new Vector3(-365, 310, 0);
             craftingFilterInput.transform.localScale = knownBuleprintsTrans.transform.localScale;
+            craftingFilterInput.placeholder.GetComponent<Text>().color = Color.gray;
+            craftingFilterInput.placeholder.GetComponent<Text>().text = "Filter...";
             craftingFilterInput.enabled = true;
 
             InputField.OnChangeEvent cfOnChangeEvent = new InputField.OnChangeEvent();
