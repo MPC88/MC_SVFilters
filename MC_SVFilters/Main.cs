@@ -105,9 +105,9 @@ namespace MC_SVFilters
             invFilterInput.transform.localScale = creditsTrans.transform.localScale;
             invFilterInput.enabled = true;
 
-            InputField.SubmitEvent ifSubmitEvent = new InputField.SubmitEvent();
-            ifSubmitEvent.AddListener(DoFilter);
-            invFilterInput.onEndEdit = ifSubmitEvent;
+            InputField.OnChangeEvent ifOnChangeEvent = new InputField.OnChangeEvent();
+            ifOnChangeEvent.AddListener(DoFilter);
+            invFilterInput.onValueChanged = ifOnChangeEvent;
 
             EventTrigger component = invFilterInput.GetComponentInChildren<EventTrigger>();
             Debug.Log(component == null);
