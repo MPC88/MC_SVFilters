@@ -18,19 +18,19 @@ namespace MC_SVFilters
         public const string pluginName = "SV Filters";
         public const string pluginVersion = "0.0.1";
 
-        // Star Valor modes, codes and fields
+        // Star Valor modes, codes, fields and such
         private const int marketPanelCode = 2;
         private const int hangerPanelCode = 3;
-        private static FieldInfo inventoryCargoMode = AccessTools.Field(typeof(Inventory), "cargoMode");
-        private static FieldInfo inventoryItemPanel = AccessTools.Field(typeof(Inventory), "itemPanel");
-        private static FieldInfo inventoryBtnCargo = AccessTools.Field(typeof(Inventory), "btnCargo");
-        private static FieldInfo inventoryBtnPassengers = AccessTools.Field(typeof(Inventory), "btnPassengers");
-        private static FieldInfo inventoryBtnStashMaterials = AccessTools.Field(typeof(Inventory), "btnStashMaterials");
-        private static MethodInfo inventoryAddItemSlot = AccessTools.Method(typeof(Inventory), "AddItemSlot");
         private const int cargoModeCargo = 0;
         private const int cargoModeCrew = 1;
         private const int cargoModeFleet = 2;
-        private static Dictionary<int, string> crewPositions = new Dictionary<int, string>()
+        private static readonly FieldInfo inventoryCargoMode = AccessTools.Field(typeof(Inventory), "cargoMode");
+        private static readonly FieldInfo inventoryItemPanel = AccessTools.Field(typeof(Inventory), "itemPanel");
+        private static readonly FieldInfo inventoryBtnCargo = AccessTools.Field(typeof(Inventory), "btnCargo");
+        private static readonly FieldInfo inventoryBtnPassengers = AccessTools.Field(typeof(Inventory), "btnPassengers");
+        private static readonly FieldInfo inventoryBtnStashMaterials = AccessTools.Field(typeof(Inventory), "btnStashMaterials");
+        private static readonly MethodInfo inventoryAddItemSlot = AccessTools.Method(typeof(Inventory), "AddItemSlot");        
+        private static readonly Dictionary<int, string> crewPositions = new Dictionary<int, string>()
         {
             {-1, "None"},
             {0, "Engineer"},
@@ -79,7 +79,7 @@ namespace MC_SVFilters
         [HarmonyPostfix]
         private static void DocingUIOpenPanel_Post(DockingUI __instance, Inventory ___inventory, int code)
         {
-            if ((code == hangerPanelCode || code == marketPanelCode) && (int)inventoryCargoMode.GetValue(___inventory) < 2)
+            if ((code == hangerPanelCode || code == marketPanelCode) && (int)inventoryCargoMode.GetValue(___inventory) < cargoModeFleet)
             {
                 if (invFilterInput == null)
                     CreateUI(___inventory.transform.Find("InventoryUI").Find("Credits"));
@@ -149,7 +149,7 @@ namespace MC_SVFilters
             int i = 1;
 
             int cargoMode = (int)inventoryCargoMode.GetValue(__instance);
-            if (cargoMode == 2)
+            if (cargoMode == cargoModeFleet)
                 return;
 
             CargoSystem cs = PlayerControl.inst.GetCargoSystem;            
@@ -161,7 +161,7 @@ namespace MC_SVFilters
             foreach (CargoItem item in cs.cargo)
             {
                 if (cfgDebug.Value) log.LogInfo("================CargoSystem loop round 1================");
-                if (item.stockStationID == -1 && ((item.itemType == 5) ^ (cargoMode == 0)))
+                if (item.stockStationID == -1 && ((item.itemType == 5) ^ (cargoMode == cargoModeCargo)))
                 {
                     if (item.itemType == 5 && IsCrewFiltered(item))
                         continue;
@@ -212,7 +212,7 @@ namespace MC_SVFilters
                 component.itemIndex = -1;
                 component.isFleet = false;
                 i++;
-                if (cargoMode < 2)
+                if (cargoMode < cargoModeFleet)
                 {
                     foreach (CargoItem item3 in cs.cargo)
                     {
@@ -222,7 +222,7 @@ namespace MC_SVFilters
                         if (item3.itemType < 5 && IsCargoItemFiltered(item3))
                             continue;
 
-                        if (item3.stockStationID == __instance.currStation.id && ((item3.itemType == 5) ^ (cargoMode == 0)))
+                        if (item3.stockStationID == __instance.currStation.id && ((item3.itemType == 5) ^ (cargoMode == cargoModeCargo)))
                         {
                             if (i >= itemPanel.childCount)
                             {
@@ -252,7 +252,7 @@ namespace MC_SVFilters
                     }
                 }
             }
-            if (__instance.currStation != null && cargoMode == 0)
+            if (__instance.currStation != null && cargoMode == cargoModeCargo)
             {
                 for (int j = 1; j < 4; j++)
                 {
@@ -318,14 +318,14 @@ namespace MC_SVFilters
 
             btnCargo.Find("Selection").gameObject.SetActive(value: false);
             btnPassengers.Find("Selection").gameObject.SetActive(value: false);
-            if (cargoMode == 0)
+            if (cargoMode == cargoModeCargo)
             {
                 __instance.newItemCount = 0;
                 text = cs.FreeSpace(passengers: false).ToString("0.0#");
                 btnCargo.Find("Selection").gameObject.SetActive(value: true);
                 btnCargo.Find("ItemCount").gameObject.SetActive(value: false);
             }
-            if (cargoMode == 1)
+            if (cargoMode == cargoModeCrew)
             {
                 __instance.newCrewCount = 0;
                 text = cs.FreeSpace(passengers: true).ToString("0");
@@ -410,12 +410,12 @@ namespace MC_SVFilters
         [HarmonyPostfix]
         private static void InventorySwitchMode_Post(int mode)
         {
-            if (mode < 2 && !invFilterInput.gameObject.activeSelf)
+            if (mode < cargoModeFleet && !invFilterInput.gameObject.activeSelf)
             {
                 if (cfgDebug.Value) log.LogInfo("Switched to cargo/crew, set active");
                 invFilterInput.gameObject.SetActive(true);
             }
-            else if (mode == 2 && invFilterInput.gameObject.activeSelf)
+            else if (mode == cargoModeFleet && invFilterInput.gameObject.activeSelf)
             {
                 if (cfgDebug.Value) log.LogInfo("Switched to fleet, set inactive");
                 invFilterInput.gameObject.SetActive(false);
