@@ -80,7 +80,8 @@ namespace MC_SVFilters
             InputField source = ((GameObject)AccessTools.Field(typeof(InputDialog), "panel").GetValue(InputDialog.inst)).transform.Find("TextInput").GetComponent<InputField>();
             craftingFilterInput = UnityEngine.Object.Instantiate<InputField>(source);
             craftingFilterInput.transform.SetParent(knownBuleprintsTrans.parent);
-            craftingFilterInput.gameObject.layer = knownBuleprintsTrans.gameObject.layer;            
+            craftingFilterInput.gameObject.layer = knownBuleprintsTrans.gameObject.layer;
+            craftingFilterInput.transform.localPosition = knownBuleprintsTrans.transform.localPosition + new Vector3(-365, 310, 0);
             craftingFilterInput.transform.localScale = knownBuleprintsTrans.transform.localScale;
             craftingFilterInput.placeholder.GetComponent<Text>().color = Color.gray;
             craftingFilterInput.placeholder.GetComponent<Text>().text = "Filter...";
