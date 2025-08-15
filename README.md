@@ -7,6 +7,9 @@ Uninstall any mods and attempt to replicate issues before reporting any suspecte
 Function
 ====
 Adds filters to inventory and blueprint crafting screens.  
+
+Cargo and blueprint filtering matches input text in the item name.  
+Crew member filtering matches input text in the crew member's name, nickname and any skill (pilot etc.).  
   
 Install
 =======
