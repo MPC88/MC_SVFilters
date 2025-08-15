@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -24,6 +23,11 @@ namespace MC_SVFilters
         private const int cargoModeCargo = 0;
         private const int cargoModeCrew = 1;
         private const int cargoModeFleet = 2;
+        private const int itemTypeWeapon = 1;
+        private const int itemTypeEquipment = 2;
+        private const int itemTypeItem = 3;
+        private const int itemTypeShip = 4;
+        private const int itemTypeCrew = 5;
         private static readonly FieldInfo inventoryCargoMode = AccessTools.Field(typeof(Inventory), "cargoMode");
         private static readonly FieldInfo inventoryItemPanel = AccessTools.Field(typeof(Inventory), "itemPanel");
         private static readonly FieldInfo inventoryBtnCargo = AccessTools.Field(typeof(Inventory), "btnCargo");
@@ -161,11 +165,11 @@ namespace MC_SVFilters
             foreach (CargoItem item in cs.cargo)
             {
                 if (cfgDebug.Value) log.LogInfo("================CargoSystem loop round 1================");
-                if (item.stockStationID == -1 && ((item.itemType == 5) ^ (cargoMode == cargoModeCargo)))
+                if (item.stockStationID == -1 && ((item.itemType == itemTypeCrew) ^ (cargoMode == cargoModeCargo)))
                 {
-                    if (item.itemType == 5 && IsCrewFiltered(item))
+                    if (item.itemType == itemTypeCrew && IsCrewFiltered(item))
                         continue;
-                    if (item.itemType < 5 && IsCargoItemFiltered(item))
+                    if (item.itemType < itemTypeCrew && IsCargoItemFiltered(item))
                         continue;
 
                     if (i >= itemPanel.childCount)
@@ -217,12 +221,12 @@ namespace MC_SVFilters
                     foreach (CargoItem item3 in cs.cargo)
                     {
                         if (cfgDebug.Value) log.LogInfo("================CargoSystem loop round 2================");
-                        if (item3.itemType == 5 && IsCrewFiltered(item3))
+                        if (item3.itemType == itemTypeCrew && IsCrewFiltered(item3))
                             continue;
-                        if (item3.itemType < 5 && IsCargoItemFiltered(item3))
+                        if (item3.itemType < itemTypeCrew && IsCargoItemFiltered(item3))
                             continue;
 
-                        if (item3.stockStationID == __instance.currStation.id && ((item3.itemType == 5) ^ (cargoMode == cargoModeCargo)))
+                        if (item3.stockStationID == __instance.currStation.id && ((item3.itemType == itemTypeCrew) ^ (cargoMode == cargoModeCargo)))
                         {
                             if (i >= itemPanel.childCount)
                             {
@@ -278,9 +282,9 @@ namespace MC_SVFilters
                     foreach (CargoItem item5 in cs.cargo)
                     {
                         if (cfgDebug.Value) log.LogInfo("================CargoSystem loop round 3================");
-                        if (item5.itemType == 5 && IsCrewFiltered(item5))
+                        if (item5.itemType == itemTypeCrew && IsCrewFiltered(item5))
                             continue;
-                        if (item5.itemType < 5 && IsCargoItemFiltered(item5))
+                        if (item5.itemType < itemTypeCrew && IsCargoItemFiltered(item5))
                             continue;
 
                         if (item5.stockStationID == num)
@@ -382,16 +386,16 @@ namespace MC_SVFilters
             string name = "";
             switch(item.itemType)
             {
-                case 1: // Weapon
+                case itemTypeWeapon:
                     name = GameData.data.weaponList[item.itemID].name;
                     break;
-                case 2: // Equipment
+                case itemTypeEquipment:
                     name = EquipmentDB.GetEquipment(item.itemID).equipName;
                     break;
-                case 3: // Item
+                case itemTypeItem:
                     name = ItemDB.GetItem(item.itemID).itemName;
                     break;
-                case 4: // Ship
+                case itemTypeShip:
                     name = ShipDB.GetModel(item.itemID).modelName;
                     break;
             }
