@@ -15,7 +15,7 @@ namespace MC_SVFilters
         // BepInEx
         public const string pluginGuid = "mc.starvalor.filters";
         public const string pluginName = "SV Filters";
-        public const string pluginVersion = "1.1.0";
+        public const string pluginVersion = "1.1.1";
 
         // Item Types
         internal const int itemTypeWeapon = 1;

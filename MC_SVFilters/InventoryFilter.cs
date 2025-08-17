@@ -385,6 +385,25 @@ namespace MC_SVFilters
                 return false;
             }
 
+            if (item.itemType == Main.itemTypeShip)
+            {
+                ShipModelData smd = ShipDB.GetModel(item.itemID);
+                if (smd != null)
+                {
+                    if (Lang.Get(0, (int)(330 + smd.shipRole)).ToLower().Contains(invFilterInput.text.ToLower()))
+                    {
+                        if (Main.cfgDebug.Value) Main.log.LogInfo("Allowed item: " + name + " as ship with role: " + Lang.Get(0, (int)(330 + smd.shipRole)));
+                        return false;
+                    }
+
+                    if (Lang.Get(5, (int)(100 + smd.shipClass)).ToLower().Contains(invFilterInput.text.ToLower()))
+                    {
+                        if (Main.cfgDebug.Value) Main.log.LogInfo("Allowed item: " + name + " as ship with class: " + Lang.Get(5, (int)(100 + smd.shipClass)));
+                        return false;
+                    }
+                }
+            }
+
             if (Main.cfgDebug.Value) Main.log.LogInfo("Filtered item: " + name);
             return true;
         }
