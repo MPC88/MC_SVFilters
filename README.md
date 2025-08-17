@@ -8,7 +8,7 @@ Function
 ====
 Adds filters to inventory and blueprint crafting screens.  
 
-Cargo and blueprint filtering matches input text in the item name.  
+Cargo and blueprint filtering matches input text in the item name.  For ships, class and role are also matched.  
 Crew member filtering matches input text in the crew member's name, nickname and any skill (pilot etc.).  
   
 Install
